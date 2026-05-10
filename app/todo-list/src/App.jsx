@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import "./App.css";
+import TarefaItem from "./TarefaItem.jsx";
+import Modal from "./Modal.jsx";
+import TodoHeader from "./TodoHeader.jsx";
 
 function App() {
   const [tarefas, setTarefas] = useState(() => {
@@ -12,8 +15,6 @@ function App() {
   }, [tarefas]);
 
   const [novaTarefa, setNovaTarefa] = useState("");
-
-  const [tudoConcluido, setTudoConcluido] = useState(false);
 
   const [tarefaEditar, setTarefaEditar] = useState("");
 
@@ -30,7 +31,7 @@ function App() {
 
     setTarefas([
       ...tarefas,
-      { id: tarefas.length + 1, tarefa: newTarefa, concluida: false },
+      { id: Date.now(), tarefa: newTarefa, concluida: false },
     ]);
     setNovaTarefa("");
   };
@@ -54,114 +55,33 @@ function App() {
 
   return (
     <>
-      {/* Modal para edição de tarefa, exibido quando "showModal" é verdadeiro */}
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Editar Tarefa</h2>
-            <input
-              type="text"
-              value={tarefaEditar.tarefa}
-              placeholder="Editar tarefa..."
-              onChange={(e) =>
-                setTarefaEditar((t) => ({ ...t, tarefa: e.target.value }))
-              }
-            />
+      <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        tarefaEditar={tarefaEditar}
+        setTarefaEditar={setTarefaEditar}
+        setTarefas={setTarefas}
+      />
 
-            <button
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
-              Cancelar
-            </button>
-
-            <button
-              onClick={() => {
-                setTarefas((t) =>
-                  t.map((item) =>
-                    item.id === tarefaEditar.id
-                      ? { ...item, tarefa: tarefaEditar.tarefa }
-                      : item,
-                  ),
-                );
-                setShowModal(false);
-              }}
-            >
-              Salvar
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Container principal da aplicação, contendo o título, contagem de tarefas e a lista de tarefas */}
-      <div className="container">
-        <h1>Todo List</h1>
-        <p>
-          {tarefas.filter((t) => t.concluida).length} de {tarefas.length}{" "}
-          tarefas concluídas!
-          {tarefas.filter((t) => t.concluida).length === tarefas.length &&
-          tarefas.length > 0 ? (
-            <div className="concluido">
-              <p>Parabéns, você concluiu todas as tarefas!</p>
-            </div>
-          ) : (
-            ""
-          )}
-          {tarefas.length === 0 && (
-            <div className="sem-tarefas">
-              <p>Você não tem tarefas, adicione uma nova tarefa!</p>
-            </div>
-          )}
-        </p>
-        {tarefas.length > 0 && (
-          <div className="remover-todas">
-            <button onClick={() => setTarefas([])}>Limpar tudo</button>
-          </div>
-        )}
-        <div className="nova-tarefa">
-          <input
-            type="text"
-            placeholder="Crie uma nova tarefa..."
-            value={novaTarefa}
-            onChange={(e) => setNovaTarefa(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleNovaTarefa(novaTarefa)}
-          />
-          <button onClick={() => handleNovaTarefa(novaTarefa)}>
-            Adicionar
-          </button>
-        </div>
+      <TodoHeader
+        tarefas={tarefas}
+        setTarefas={setTarefas}
+        novaTarefa={novaTarefa}
+        setNovaTarefa={setNovaTarefa}
+        handleNovaTarefa={handleNovaTarefa}
+        setShowModal={setShowModal}
+        setTarefaEditar={setTarefaEditar}
+        tarefaEditar={tarefaEditar}
+      >
         <ul className="lista-tarefas">
-          {tarefas.map((t) => (
-            <>
-              <li className="tarefa" key={t.id}>
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  onChange={() => handleTarefaConcluida(t.id)}
-                />
-                <span className={t.concluida ? "concluida" : ""}>
-                  {t.tarefa}
-                </span>
-
-                <button
-                  className="editar-tarefa"
-                  onClick={() => handleEditarTarefa(t)}
-                >
-                  Editar
-                </button>
-
-                <button
-                  className="deletar-tarefa"
-                  onClick={() => handleDeleteTarefa(t.id)}
-                >
-                  Deletar
-                </button>
-              </li>
-            </>
-          ))}
+          <TarefaItem
+            tarefas={tarefas}
+            onToggle={handleTarefaConcluida}
+            onDelete={handleDeleteTarefa}
+            onEdit={handleEditarTarefa}
+          />
         </ul>
-      </div>
+      </TodoHeader>
     </>
   );
 }
