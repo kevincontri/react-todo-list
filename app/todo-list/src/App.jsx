@@ -54,6 +54,7 @@ function App() {
 
   return (
     <>
+      {/* Modal para edição de tarefa, exibido quando "showModal" é verdadeiro */}
       {showModal && (
         <div className="modal">
           <div className="modal-content">
@@ -66,6 +67,15 @@ function App() {
                 setTarefaEditar((t) => ({ ...t, tarefa: e.target.value }))
               }
             />
+
+            <button
+              onClick={() => {
+                setShowModal(false);
+              }}
+            >
+              Cancelar
+            </button>
+
             <button
               onClick={() => {
                 setTarefas((t) =>
@@ -84,6 +94,7 @@ function App() {
         </div>
       )}
 
+      {/* Container principal da aplicação, contendo o título, contagem de tarefas e a lista de tarefas */}
       <div className="container">
         <h1>Todo List</h1>
         <p>
@@ -120,7 +131,6 @@ function App() {
             Adicionar
           </button>
         </div>
-
         <ul className="lista-tarefas">
           {tarefas.map((t) => (
             <>
