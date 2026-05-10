@@ -8,9 +8,6 @@ export default function TodoHeader({
   novaTarefa,
   setNovaTarefa,
   handleNovaTarefa,
-  setShowModal,
-  setTarefaEditar,
-  tarefaEditar,
   children,
 }) {
   return (

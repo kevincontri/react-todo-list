@@ -73,14 +73,12 @@ function App() {
         setTarefaEditar={setTarefaEditar}
         tarefaEditar={tarefaEditar}
       >
-        <ul className="lista-tarefas">
-          <TarefaItem
-            tarefas={tarefas}
-            onToggle={handleTarefaConcluida}
-            onDelete={handleDeleteTarefa}
-            onEdit={handleEditarTarefa}
-          />
-        </ul>
+        <TarefaItem
+          tarefas={tarefas}
+          onToggle={handleTarefaConcluida}
+          onDelete={handleDeleteTarefa}
+          onEdit={handleEditarTarefa}
+        />
       </TodoHeader>
     </>
   );
