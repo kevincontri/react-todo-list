@@ -1,29 +1,41 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 import "./App.css";
 
-export default function TarefaItem({ tarefas, onToggle, onDelete, onEdit }) {
+export const TarefaItem = ({ tarefa, onToggle, onDelete, onEdit }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: tarefa.id });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
   return (
-    <>
-      <ul className="lista-tarefas">
-        {tarefas.map((t) => (
-          <li key={t.id} className="tarefa">
-            <input
-              type="checkbox"
-              className="checkbox"
-              checked={t.concluida}
-              onChange={() => onToggle(t.id)}
-            />
-            <span className={t.concluida ? "concluida" : ""}>{t.tarefa}</span>
+    <li
+      className="tarefa"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
+      <input
+        type="checkbox"
+        className="checkbox"
+        checked={tarefa.concluida}
+        onChange={() => onToggle(tarefa.id)}
+      />
+      <span className={tarefa.concluida ? "concluida" : ""}>
+        {tarefa.tarefa}
+      </span>
 
-            <button className="editar-tarefa" onClick={() => onEdit(t)}>
-              Editar
-            </button>
+      <button className="editar-tarefa" onClick={() => onEdit(tarefa)}>
+        Editar
+      </button>
 
-            <button className="deletar-tarefa" onClick={() => onDelete(t.id)}>
-              Deletar
-            </button>
-          </li>
-        ))}
-      </ul>
-    </>
+      <button className="deletar-tarefa" onClick={() => onDelete(tarefa.id)}>
+        Deletar
+      </button>
+    </li>
   );
-}
+};

@@ -1,8 +1,23 @@
 import { useState, useEffect, useRef, Fragment } from "react";
 import "./App.css";
-import TarefaItem from "./TarefaItem.jsx";
+import TarefaLista from "./TarefaLista.jsx";
 import Modal from "./Modal.jsx";
 import TodoHeader from "./TodoHeader.jsx";
+import { DndContext } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
+import {
+  closestCenter,
+  useSensor,
+  useSensors,
+  PointerSensor,
+  KeyboardSensor,
+  TouchSensor,
+} from "@dnd-kit/core";
 
 function App() {
   const [tarefas, setTarefas] = useState(() => {
@@ -19,6 +34,14 @@ function App() {
   const [tarefaEditar, setTarefaEditar] = useState("");
 
   const [showModal, setShowModal] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+    useSensor(TouchSensor),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+  );
 
   const handleNovaTarefa = (newTarefa) => {
     if (!newTarefa.trim()) return;
@@ -53,6 +76,24 @@ function App() {
     setShowModal(true);
   };
 
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    // Verifica se o item foi solto sobre um alvo válido
+    if (!over) return;
+
+    // Se o item foi solto sobre ele mesmo, não faz nada
+    if (active.id === over.id) return;
+
+    // Encontra os índices dos itens arrastado e alvo para reordenar a lista
+    if (active.id !== over.id) {
+      const oldIndex = tarefas.findIndex((t) => t.id === active.id);
+      const newIndex = tarefas.findIndex((t) => t.id === over.id);
+      const newArray = arrayMove(tarefas, oldIndex, newIndex);
+      setTarefas(newArray);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -73,12 +114,23 @@ function App() {
         setTarefaEditar={setTarefaEditar}
         tarefaEditar={tarefaEditar}
       >
-        <TarefaItem
-          tarefas={tarefas}
-          onToggle={handleTarefaConcluida}
-          onDelete={handleDeleteTarefa}
-          onEdit={handleEditarTarefa}
-        />
+        <DndContext
+          onDragEnd={handleDragEnd}
+          collisionDetection={closestCenter}
+          sensors={sensors}
+        >
+          <SortableContext
+            items={tarefas.map((t) => t.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <TarefaLista
+              tarefas={tarefas}
+              onToggle={handleTarefaConcluida}
+              onDelete={handleDeleteTarefa}
+              onEdit={handleEditarTarefa}
+            />
+          </SortableContext>
+        </DndContext>
       </TodoHeader>
     </>
   );
