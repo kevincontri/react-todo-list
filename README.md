@@ -14,6 +14,7 @@ https://github.com/user-attachments/assets/061ceb39-266c-4444-9e62-475db159218a
 - Editar tarefas existentes através de um modal
 - Marcar tarefas como concluídas
 - Remover tarefas individualmente
+- Mover ordenação das tarefas com @dnd-kit
 - Limpar todas as tarefas de uma só vez
 - Persistência automática no `localStorage` (suas tarefas continuam ali ao recarregar a página)
 - Mensagem de parabéns ao concluir todas as tarefas
@@ -24,6 +25,7 @@ https://github.com/user-attachments/assets/061ceb39-266c-4444-9e62-475db159218a
 - [React 19](https://react.dev/)
 - [Vite](https://vitejs.dev/)
 - [ESLint](https://eslint.org/)
+- [dnd-kit](https://dndkit.com/)
 - CSS puro
 
 ## Como executar o projeto
@@ -87,6 +89,6 @@ react-todo-list/
         └── vite.config.js
 ```
 
-##  Autor
+## Autor
 
 Feito por **Kevin Contri**.
