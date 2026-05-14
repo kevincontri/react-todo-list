@@ -4,7 +4,7 @@ Uma aplicação simples e prática de lista de tarefas (Todo List) construída c
 
 ## Demo
 
-https://github.com/user-attachments/assets/061ceb39-266c-4444-9e62-475db159218a
+https://github.com/user-attachments/assets/6f8e4440-63ae-47a0-b39b-c54f90c3a079
 
 ---
 
